@@ -9,142 +9,150 @@ var config = require('./../config');
 var BASE_PATH = process.env.BASE_PATH || '/';
 
 module.exports = {
-    name: 'client',
-    devtool: 'cheap-eval-source-map',
-    target: 'web',
-    mode: 'development',
-    entry: {
-        app: [path.join(config.srcDir, 'index.js')]
+  name: 'client',
+  devtool: 'cheap-eval-source-map',
+  target: 'web',
+  mode: 'development',
+  entry: {
+    app: [path.join(config.srcDir, 'index.js')]
+  },
+  output: {
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
+    path: config.distDir,
+    publicPath: BASE_PATH
+  },
+  resolve: {
+    alias: {
+      "components": path.resolve(__dirname, "../app/components"),
+      "routes": path.resolve(__dirname, "../app/routes"),
+      "images": path.resolve(__dirname, "../app/images"),
+      "config": path.resolve(__dirname, "../app/config"),
+      "utils": path.resolve(__dirname, "../app/utilities.js"),
     },
-    output: {
-        filename: '[name].bundle.js',
-        chunkFilename: '[name].chunk.js',
-        path: config.distDir,
-        publicPath: BASE_PATH
-    },
-    resolve: {
-        modules: [
-            'node_modules',
-            config.srcDir
-        ]
-    },
-    plugins: [
-        new CircularDependencyPlugin({
-            exclude: /a\.js|node_modules/,
-            failOnError: true,
-            allowAsyncCycles: false,
-            cwd: process.cwd(),
-        }),
-        new HtmlWebpackPlugin({
-            template: config.srcHtmlLayout,
-            inject: false,
-            chunksSortMode: 'none'
-        }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development'),
-            'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
-        }),
-        new webpack.NamedModulesPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
-        new ExtractCssChunks(),
+    modules: [
+      'node_modules',
+      config.srcDir
     ],
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: 'babel-loader'
-            },
-            // Modular Styles
-            {
-                test: /\.css$/,
-                use: [
-                    { loader: 'style-loader' },
-                    { 
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                            importLoaders: 1,
-                        }
-                    },
-                    { loader: 'postcss-loader' }
-                ],
-                exclude: [path.resolve(config.srcDir, 'styles')],
-                include: [config.srcDir]
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    { loader: 'style-loader' },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                            importLoaders: 1,
-                        }
-                    },
-                    { loader: 'postcss-loader' },
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            includePaths: config.scssIncludes
-                        }
-                    }
-                ],
-                exclude: [path.resolve(config.srcDir, 'styles')],
-                include: [config.srcDir]
-            },
-            // Global Styles
-            {
-                test: /\.css$/,
-                use: [
-                    ExtractCssChunks.loader,
-                    'css-loader',
-                    'postcss-loader'
-                ],
-                include: [path.resolve(config.srcDir, 'styles')]
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    ExtractCssChunks.loader,
-                    'css-loader',
-                    'postcss-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            includePaths: config.scssIncludes
-                        }
-                    }
-                ],
-                include: [path.resolve(config.srcDir, 'styles')]
-            },
-            // Fonts
-            {
-                test: /\.(ttf|eot|woff|woff2)$/,
-                loader: "file-loader",
-                options: {
-                    name: "fonts/[name].[ext]",
-                }
-            },
-            // Files
-            {
-                test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
-                loader: "file-loader",
-                options: {
-                    name: "static/[name].[ext]",
-                }
+    extensions: [".js", ".jsx", ".css", ".scss"]
+  },
+  plugins: [
+    new CircularDependencyPlugin({
+      exclude: /a\.js|node_modules/,
+      failOnError: true,
+      allowAsyncCycles: false,
+      cwd: process.cwd(),
+    }),
+    new HtmlWebpackPlugin({
+      template: config.srcHtmlLayout,
+      inject: false,
+      chunksSortMode: 'none'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
+    }),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new ExtractCssChunks(),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: 'babel-loader'
+      },
+      // Modular Styles
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          { 
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 1,
             }
-        ]
+          },
+          { loader: 'postcss-loader' }
+        ],
+        exclude: [path.resolve(config.srcDir, 'styles')],
+        include: [config.srcDir]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          { loader: 'style-loader' },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 1,
+            }
+          },
+          { loader: 'postcss-loader' },
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: config.scssIncludes
+            }
+          }
+        ],
+        exclude: [path.resolve(config.srcDir, 'styles')],
+        include: [config.srcDir]
+      },
+      // Global Styles
+      {
+        test: /\.css$/,
+        use: [
+          ExtractCssChunks.loader,
+          'css-loader',
+          'postcss-loader'
+        ],
+        include: [path.resolve(config.srcDir, 'styles')]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          ExtractCssChunks.loader,
+          'css-loader',
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: config.scssIncludes
+            }
+          }
+        ],
+        include: [path.resolve(config.srcDir, 'styles')]
+      },
+      // Fonts
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        loader: "file-loader",
+        options: {
+          name: "fonts/[name].[ext]",
+        }
+      },
+      // Files
+      {
+        test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
+        loader: "file-loader",
+        options: {
+          name: "static/[name].[ext]",
+        }
+      }
+    ]
+  },
+  devServer: {
+    hot: true,
+    contentBase: config.serveDir,
+    compress: true,
+    historyApiFallback: {
+      index: BASE_PATH
     },
-    devServer: {
-        hot: true,
-        contentBase: config.serveDir,
-        compress: true,
-        historyApiFallback: {
-            index: BASE_PATH
-        },
-        host: '0.0.0.0',
-        port: 4100
-    }
+    host: '0.0.0.0',
+    port: 4100
+  }
 }

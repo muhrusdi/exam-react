@@ -23,7 +23,7 @@ import {
   DropdownToggle,
   DropdownItem,
   Button
-} from './../../components'
+} from '../../components'
 import { HeaderMain } from "../components/HeaderMain";
 import {
   HeaderDemo
@@ -89,10 +89,18 @@ import {
   TimelineMini
 } from "../components/Timeline/TimelineMini";
 
+/**
+ * my code
+ */
+
+import MyTable from "components/MyTable"
+
+const TableSlide = MyTable.Slide
+
 export const Widgets = () => (
   <Container>
     <HeaderMain 
-      title="Dasboard"
+      title="Pegawai"
       className="mb-5 mt-4"
     />
     { /* START Header 1 */}
@@ -108,6 +116,7 @@ export const Widgets = () => (
         />
       </Col>
     </Row>
+    <TableSlide/>
     { /* END Header 1 */}
     { /* START Section 1 */}
     <CardDeck>

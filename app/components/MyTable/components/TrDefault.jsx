@@ -10,9 +10,11 @@ import {
   DropdownItem,
   Media,
   Avatar,
-  AvatarAddOn
+  Button,
+  AvatarAddOn,
 } from 'components';
-import { randomAvatar } from './../../../../utilities';
+
+import { randomAvatar } from 'utils';
 
 /*eslint-disable */
 const colorStatus = [
@@ -23,7 +25,7 @@ const colorStatus = [
 ];
 /*eslint-enable */
 
-const TrTableDefault = (props) => (
+const TrDefault = ({metaData, handleSlide, ...props}) => (
   <React.Fragment>
     {
       _.times(4, (index) => (
@@ -86,42 +88,59 @@ const TrTableDefault = (props) => (
             <i className="fa fa-circle-o text-success mr-2"></i>
             { faker.finance.transactionType() }
           </td>
-          <td className="align-middle text-right">
-            <UncontrolledButtonDropdown>
-              <DropdownToggle color="link" className={` text-decoration-none ${ props.dropdownColor } `}>
-                <i className="fa fa-gear"></i><i className="fa fa-angle-down ml-2"></i>
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem>
-                  <i className="fa fa-fw fa-envelope mr-2"></i>
-                                    Send Email
-                </DropdownItem>
-                <DropdownItem>
-                  <i className="fa fa-fw fa-phone mr-2"></i>
-                                    Call
-                </DropdownItem>
-                <DropdownItem>
-                  <i className="fa fa-fw fa-user mr-2"></i>
-                                    Profile
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-          </td>
+          {
+            handleSlide ? (
+              <td className="align-middle text-right">
+                <Button
+                  onClick={() => {
+                    handleSlide({
+                      [`"${metaData.id}"`]: {
+                        id: index,
+                        idSlide: metaData.id,
+                        title: metaData.title,
+				
+                      }
+                    })
+                  }}
+                  outline
+                  color="secondary">{metaData.title}</Button>
+                {/* <UncontrolledButtonDropdown>
+									<DropdownToggle color="link" className={` text-decoration-none ${ props.dropdownColor } `}>
+										<i className="fa fa-gear"></i><i className="fa fa-angle-down ml-2"></i>
+									</DropdownToggle>
+									<DropdownMenu right>
+										<DropdownItem>
+											<i className="fa fa-fw fa-envelope mr-2"></i>
+																				Send Email
+										</DropdownItem>
+										<DropdownItem>
+											<i className="fa fa-fw fa-phone mr-2"></i>
+																				Call
+										</DropdownItem>
+										<DropdownItem>
+											<i className="fa fa-fw fa-user mr-2"></i>
+																				Profile
+										</DropdownItem>
+									</DropdownMenu>
+								</UncontrolledButtonDropdown> */}
+              </td>
+            ) : null
+          }
         </tr>
       ))
     }
   </React.Fragment>
 )
 
-TrTableDefault.propTypes = {
+TrDefault.propTypes = {
   projectColor: PropTypes.node,
   leaderStatus: PropTypes.node,
   dropdownColor: PropTypes.node
 };
-TrTableDefault.defaultProps = {
+TrDefault.defaultProps = {
   projectColor: "text-inverse",
   leaderStatus: "white",
   dropdownColor: ""
 };
 
-export { TrTableDefault };
+export { TrDefault };
